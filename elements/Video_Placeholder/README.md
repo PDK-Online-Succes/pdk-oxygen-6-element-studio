@@ -24,7 +24,7 @@ Content:
 | Custom Play Icon | Eigen icoon in plaats van de standaard driehoek | standaard driehoek |
 | Loop, Muted, Controls, Plays Inline | Zoals bij het standaard HTML5 Video-element (alleen bij HTML5) | Controls en Plays Inline aan |
 
-Design:
+Design (alle instellingen onder Play Button kunnen een globale variabele gebruiken via de variabelenkiezer in de builder):
 
 | Instelling | Wat het doet | Standaard |
 | --- | --- | --- |
@@ -59,6 +59,7 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 
 - Mobiele browsers kunnen autoplay blokkeren; een tweede tik op de speler kan dan nodig zijn.
 - Het centreren van een eigen icoon gebeurt alleen op de site, niet in de builder: daar staat het icoon nog volgens zijn eigen `viewBox`. Stroke-breedte telt niet mee, en iconen die later via AJAX worden geladen worden niet gemeten.
+- De variabelenkiezer staat aan via `enableVariables` in `designControls()` van `element.php`. Controleer na opslaan in Element Studio of die regel er nog staat: de studio kan dit bestand herschrijven.
 - Een `Permissions-Policy`-header met `autoplay=()` of `encrypted-media=()` blokkeert YouTube en Vimeo; zie stap 4 bij Installatie.
 - Geen integratie met een cookie-consenttool. De klik geldt niet automatisch als toestemming.
 - JavaScript is vereist; zonder JavaScript doet de knop niets.

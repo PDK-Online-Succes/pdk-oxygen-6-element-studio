@@ -91,7 +91,7 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
 
     static function designControls()
     {
-        return [c(
+        $controls = [c(
         "video",
         "Video",
         [c(
@@ -173,6 +173,13 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
         [],
 
       )];
+
+        // Variabelenkiezer voor alle knop-instellingen: in Oxygen moet dit expliciet aan staan, en c() kent deze optie niet.
+        foreach ($controls[1]['children'] as $i => $control) {
+            $controls[1]['children'][$i]['enableVariables'] = true;
+        }
+
+        return $controls;
     }
 
     static function contentControls()
