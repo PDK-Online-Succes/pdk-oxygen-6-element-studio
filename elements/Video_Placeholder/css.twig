@@ -1,0 +1,13 @@
+{# Editorwaarden: ; { } < > * quotes en backslash worden eruit gehaald zodat ze geen CSS kunnen injecteren of commentaar kunnen openen. #}
+{% set strip = {';': '', '{': '', '}': '', '<': '', '>': '', '*': '', '"': '', "'": '', '\\': ''} %}
+{% set ratio = design.video.aspect_ratio %}
+{% set play = design.play %}
+%%SELECTOR%% {
+  {% if ratio in ['16/9', '4/3', '1/1', '21/9', '3/2', '9/16'] %}--pdk-vp-ratio: {{ ratio|replace({'/': ' / '}) }};{% endif %}
+  {% if play.size.style %}--pdk-vp-size: {{ play.size.style|replace(strip) }};{% endif %}
+  {% if play.icon_size.style %}--pdk-vp-icon: {{ play.icon_size.style|replace(strip) }};{% endif %}
+  {% if play.radius.style %}--pdk-vp-radius: {{ play.radius.style|replace(strip) }};{% endif %}
+  {% if play.background %}--pdk-vp-bg: {{ play.background|replace(strip) }};{% endif %}
+  {% if play.icon_color %}--pdk-vp-icon-color: {{ play.icon_color|replace(strip) }};{% endif %}
+  {% if play.background_hover %}--pdk-vp-bg-hover: {{ play.background_hover|replace(strip) }};--pdk-vp-hover-filter: none;{% endif %}
+}

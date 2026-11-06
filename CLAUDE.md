@@ -1,0 +1,9 @@
+# Regels voor deze bibliotheek
+
+Geldt voor mensen en agents. Dit zijn harde regels.
+
+1. **Mapstructuur.** Elk element staat in `elements/<Naam>/` met de vier Element Studio-bestanden (`element.php`, `html.twig`, `css.twig`, `default.css`) en een verplichte `README.md`. De README gebruikt exact deze secties: Wat het doet, Wanneer gebruiken, Instellingen, Gedrag en privacy, Beperkingen, Installatie, Versie/compatibiliteit. Alleen de vier Element Studio-bestanden worden op de site gezet.
+2. **Documentatie hoort bij de wijziging.** Elk nieuw of gewijzigd element past zijn eigen README en de index in de root `README.md` aan in dezelfde commit. Een element zonder documentatie is niet af.
+3. **Werkwijze.** Maak het lege element eerst in de builder (Element Studio, `Ctrl+Alt+E`, New element, opslaglocatie "PDK Elementen"), want de API kan geen elementen aanmaken. Bewerk daarna de bestanden via `pdk-theme-options/list-oxygen-elements`, `read-oxygen-element-file` en `write-oxygen-element-file`. De repository is de bron van waarheid. Wijzig nooit standaard Oxygen-elementen: updates overschrijven die.
+4. **Controle.** `element.php` wordt bij opslaan op syntaxis gecontroleerd, Twig niet. Controleer het renderen dus altijd op de site (builder en front-end).
+5. **Beveiliging.** Embed-URL's worden opnieuw opgebouwd uit gevalideerde id's en een lijst met toegestane hostnamen: een door de gebruiker ingevulde URL komt nooit rechtstreeks in een iframe-`src`, en HTML5-bronnen zijn alleen http(s) of root-relatief. Escape alle editorwaarden voor hun context. De Twig-omgeving van Breakdance heeft autoescape uit, dus gebruik expliciet `|e('html_attr')` en dergelijke. De enige toegestane niet-geescapete waarde is `svgCode` van een icoon-control: de standaard Oxygen-elementen doen hetzelfde en Full Interface-gebruikers kunnen toch al code-elementen plaatsen.
