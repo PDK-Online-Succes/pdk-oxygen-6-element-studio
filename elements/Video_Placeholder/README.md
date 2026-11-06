@@ -57,6 +57,7 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 ## Beperkingen
 
 - Mobiele browsers kunnen autoplay blokkeren; een tweede tik op de speler kan dan nodig zijn.
+- Een `Permissions-Policy`-header met `autoplay=()` of `encrypted-media=()` blokkeert YouTube en Vimeo; zie stap 4 bij Installatie.
 - Geen integratie met een cookie-consenttool. De klik geldt niet automatisch als toestemming.
 - JavaScript is vereist; zonder JavaScript doet de knop niets.
 - Eén klik-script wordt via de dependencies van het element ingevoegd; bij meerdere instanties voorkomt een vlag dat het dubbel wordt gebonden.
@@ -70,6 +71,23 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 1. Maak in de builder (Element Studio, `Ctrl+Alt+E`) een nieuw element `Video Placeholder` met opslaglocatie "PDK Elementen". De API kan geen elementen aanmaken.
 2. Zet de inhoud van de vier bestanden in `elements/Video_Placeholder/` (`element.php`, `html.twig`, `css.twig`, `default.css`) in het nieuwe element, via `pdk-theme-options/list-oxygen-elements`, `read-oxygen-element-file` en `write-oxygen-element-file`. `README.md` blijft alleen in de repository.
 3. Controleer op de site dat het element rendert: `element.php` wordt bij opslaan op syntaxis gecontroleerd, Twig niet.
+4. Controleer de `Permissions-Policy`-header van de site (`curl -sI https://site.nl/ | grep -i permissions-policy`). Staat daarin `autoplay=()` of `encrypted-media=()`, zoals de hostingbeveiliging cPFence instelt, dan geeft Vimeo "Unable to play video" en vraagt YouTube om een extra klik. Het element kan dat niet omzeilen. Voeg dan dit toe aan de eigen PHP-code van de site (`custom-functions.php`). Alleen de eigen site, YouTube en Vimeo krijgen deze twee rechten; de rest van de header blijft gelijk:
+
+   ```php
+   // Video-embeds toestaan: cPFence blokkeert autoplay en encrypted-media voor alle iframes.
+   add_filter( 'wp_headers', function ( $headers ) {
+   	if ( empty( $headers['Permissions-Policy'] ) ) {
+   		return $headers;
+   	}
+   	$allow = '(self "https://www.youtube-nocookie.com" "https://player.vimeo.com")';
+   	$headers['Permissions-Policy'] = str_replace(
+   		array( 'autoplay=()', 'encrypted-media=()' ),
+   		array( "autoplay=$allow", "encrypted-media=$allow" ),
+   		$headers['Permissions-Policy']
+   	);
+   	return $headers;
+   }, 20 );
+   ```
 
 ## Versie/compatibiliteit
 
