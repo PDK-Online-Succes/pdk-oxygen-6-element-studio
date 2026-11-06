@@ -324,7 +324,41 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
     }
     return null;
   }
-  window.pdkVp = { parse: parse };
+  /* Centreert een icoon op de kleinste cirkel om de echte vorm: lege ruimte in de viewBox telt niet mee en driehoeken ogen recht. */
+  function fit(svg) {
+    var root = svg.getScreenCTM(), pts = [], n = 200, c, r = 0;
+    if (!root) return;
+    var inv = root.inverse();
+    svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line").forEach(function (el) {
+      if (el.closest("defs,clipPath,mask")) return;
+      var len = el.getTotalLength(), m = inv.multiply(el.getScreenCTM());
+      for (var i = 0; i <= n; i++) pts.push(el.getPointAtLength(len * i / n).matrixTransform(m));
+    });
+    if (!pts.length) return;
+    function far() {
+      var q = pts[0], d = -1;
+      pts.forEach(function (p) { var e = Math.hypot(p.x - c.x, p.y - c.y); if (e > d) { d = e; q = p; } });
+      r = d;
+      return q;
+    }
+    c = { x: pts[0].x, y: pts[0].y };
+    for (var k = 1; k <= 300; k++) {
+      var q = far();
+      c.x += (q.x - c.x) / (k + 1);
+      c.y += (q.y - c.y) / (k + 1);
+    }
+    far();
+    if (!(r > 0)) return;
+    r *= 1.02;
+    svg.setAttribute("viewBox", (c.x - r) + " " + (c.y - r) + " " + (2 * r) + " " + (2 * r));
+  }
+  function fitAll() {
+    document.querySelectorAll(".pdk-vp__icon svg").forEach(function (s) {
+      try { fit(s); } catch (e) { console.warn("Video Placeholder: icoon niet gemeten", e); }
+    });
+  }
+  window.pdkVp = { parse: parse, fit: fit };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fitAll); else fitAll();
   document.addEventListener("click", function (e) {
     var f = e.target.closest ? e.target.closest(".pdk-vp") : null;
     var b = f && f.querySelector(".pdk-vp__btn");
