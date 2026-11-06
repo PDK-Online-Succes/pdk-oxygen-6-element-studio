@@ -326,7 +326,8 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
   }
   window.pdkVp = { parse: parse };
   document.addEventListener("click", function (e) {
-    var b = e.target.closest ? e.target.closest(".pdk-vp__btn") : null;
+    var f = e.target.closest ? e.target.closest(".pdk-vp") : null;
+    var b = f && f.querySelector(".pdk-vp__btn");
     if (!b) return;
     var d = b.dataset, url = parse(d.type, d.src), p, r;
     if (!url) { console.warn("Video Placeholder: ongeldige of niet-ondersteunde video-URL", d.src); return; }

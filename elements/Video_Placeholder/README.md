@@ -52,6 +52,7 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 - Toegankelijkheid: de knop is een echte `<button>` met `aria-label`, heeft een zichtbare focusring en de hover-animatie volgt `prefers-reduced-motion`.
 - HTML5: als `play()` wordt geweigerd door de browser, wordt `controls` ingeschakeld zodat de bezoeker alsnog zelf kan starten.
 - In de builder wordt de speler niet vervangen; het script draait alleen op de front-end.
+- Het hele placeholder-kader is klikbaar (niet alleen de knop) en toont een aanwijzer en de hover-stand van de knop. Toetsenbordgebruikers starten de video via de knop.
 
 ## Beperkingen
 
