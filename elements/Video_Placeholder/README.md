@@ -33,7 +33,7 @@ Design:
 | Background Color | Achtergrondkleur van de knop | `var(--green, #669F87)` |
 | Hover Background Color | Achtergrondkleur bij hover | iets lichter dan de achtergrondkleur |
 | Icon Color | Kleur van het icoon | `#D9D9D9` |
-| Icon Size | Grootte van het icoon, in % van de knop of px | 38% |
+| Icon Size | Grootte van het icoon, in % van het grootste vierkant binnen de cirkel (100% past precies) of px. Blijft altijd binnen dat vierkant | 54% |
 | Border Radius | Afronding van de knop | 50% |
 
 De standaardwaarden voor knopgrootte, kleuren en afronding staan in de CSS en verschijnen dus niet ingevuld in de velden. Een leeg veld gebruikt de standaardwaarde.
