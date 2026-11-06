@@ -91,7 +91,7 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
 
     static function designControls()
     {
-        return [c(
+        $controls = [c(
         "video",
         "Video",
         [c(
@@ -173,6 +173,13 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
         [],
 
       )];
+
+        // Variabelenkiezer voor alle knop-instellingen: in Oxygen moet dit expliciet aan staan, en c() kent deze optie niet.
+        foreach ($controls[1]['children'] as $i => $control) {
+            $controls[1]['children'][$i]['enableVariables'] = true;
+        }
+
+        return $controls;
     }
 
     static function contentControls()
@@ -324,7 +331,34 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
     }
     return null;
   }
-  window.pdkVp = { parse: parse };
+  /* Centreert een icoon op het gemiddelde van punten langs de zichtbare vorm: lege ruimte en onzichtbare kaders tellen niet mee, een driehoek oogt recht en een chevron staat in het midden. */
+  function fit(svg) {
+    var root = svg.getScreenCTM(), pts = [], c = { x: 0, y: 0 }, r = 0, stroke = 0;
+    if (!root) return;
+    var inv = root.inverse(), total = 0;
+    var els = [].filter.call(svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line"), function (el) {
+      var s = getComputedStyle(el);
+      return !el.closest("defs,clipPath,mask,symbol,pattern,marker") && el.getTotalLength() > 0 && s.display !== "none" && s.visibility !== "hidden" && !(s.fill === "none" && s.stroke === "none");
+    });
+    els.forEach(function (el) { total += el.getTotalLength(); });
+    if (!(total > 0)) return;
+    els.forEach(function (el) {
+      var len = el.getTotalLength(), m = inv.multiply(el.getScreenCTM()), n = Math.max(2, Math.ceil(len / total * 600)), st = getComputedStyle(el);
+      for (var i = 0; i < n; i++) pts.push(el.getPointAtLength(len * i / n).matrixTransform(m));
+      if (st.stroke !== "none") stroke = Math.max(stroke, parseFloat(st.strokeWidth) || 0);
+    });
+    pts.forEach(function (p) { c.x += p.x / pts.length; c.y += p.y / pts.length; });
+    pts.forEach(function (p) { r = Math.max(r, Math.hypot(p.x - c.x, p.y - c.y)); });
+    r = (r + stroke / 2) * 1.02;
+    svg.setAttribute("viewBox", (c.x - r) + " " + (c.y - r) + " " + (2 * r) + " " + (2 * r));
+  }
+  function fitAll() {
+    document.querySelectorAll(".pdk-vp__icon svg").forEach(function (s) {
+      try { fit(s); } catch (e) { console.warn("Video Placeholder: icoon niet gemeten", e); }
+    });
+  }
+  window.pdkVp = { parse: parse, fit: fit };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fitAll); else fitAll();
   document.addEventListener("click", function (e) {
     var f = e.target.closest ? e.target.closest(".pdk-vp") : null;
     var b = f && f.querySelector(".pdk-vp__btn");

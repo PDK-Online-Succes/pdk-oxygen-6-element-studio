@@ -24,7 +24,7 @@ Content:
 | Custom Play Icon | Eigen icoon in plaats van de standaard driehoek | standaard driehoek |
 | Loop, Muted, Controls, Plays Inline | Zoals bij het standaard HTML5 Video-element (alleen bij HTML5) | Controls en Plays Inline aan |
 
-Design:
+Design (alle instellingen onder Play Button kunnen een globale variabele gebruiken via de variabelenkiezer in de builder):
 
 | Instelling | Wat het doet | Standaard |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ Design:
 | Background Color | Achtergrondkleur van de knop | `var(--green, #669F87)` |
 | Hover Background Color | Achtergrondkleur bij hover | iets lichter dan de achtergrondkleur |
 | Icon Color | Kleur van het icoon | `#D9D9D9` |
-| Icon Size | Grootte van het icoon, in % van de knop of px | 38% |
+| Icon Size | Grootte van het icoon, in % van het grootste vierkant binnen de cirkel (100% past precies) of px. Blijft altijd binnen dat vierkant | 54% |
 | Border Radius | Afronding van de knop | 50% |
 
 De standaardwaarden voor knopgrootte, kleuren en afronding staan in de CSS en verschijnen dus niet ingevuld in de velden. Een leeg veld gebruikt de standaardwaarde.
@@ -52,11 +52,14 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 - Toegankelijkheid: de knop is een echte `<button>` met `aria-label`, heeft een zichtbare focusring en de hover-animatie volgt `prefers-reduced-motion`.
 - HTML5: als `play()` wordt geweigerd door de browser, wordt `controls` ingeschakeld zodat de bezoeker alsnog zelf kan starten.
 - In de builder wordt de speler niet vervangen; het script draait alleen op de front-end.
+- Icoon: op de site meet het script de echte vorm en legt het gemiddelde van punten langs de zichtbare vorm op het midden van de knop. Lege ruimte in de `viewBox` en onzichtbare kaders tellen dus niet mee, een driehoek oogt recht en een chevron staat in het midden. Icon Size geldt voor de cirkel om de vorm vanaf dat punt, inclusief streekdikte.
 - Het hele placeholder-kader is klikbaar (niet alleen de knop) en toont een aanwijzer en de hover-stand van de knop. Toetsenbordgebruikers starten de video via de knop.
 
 ## Beperkingen
 
 - Mobiele browsers kunnen autoplay blokkeren; een tweede tik op de speler kan dan nodig zijn.
+- Het centreren van een eigen icoon gebeurt alleen op de site, niet in de builder: daar staat het icoon nog volgens zijn eigen `viewBox`. Iconen die later via AJAX worden geladen of die bij het laden verborgen zijn (bijvoorbeeld in een popup of tab) worden mogelijk niet gemeten; ze houden dan hun eigen `viewBox`. Alleen vormen worden gemeten: `<text>`, `<use>` en `<image>` tellen niet mee.
+- De variabelenkiezer staat aan via `enableVariables` in `designControls()` van `element.php`. **Opslaan in Element Studio haalt dit weg:** de generator van Oxygen 6.2.1 schrijft deze optie niet weg, ook niet met de schakelaar "Enable Variables". Bewerk dit element daarom alleen via de repository, of zet `element.php` daarna opnieuw uit de repository op de site.
 - Een `Permissions-Policy`-header met `autoplay=()` of `encrypted-media=()` blokkeert YouTube en Vimeo; zie stap 4 bij Installatie.
 - Geen integratie met een cookie-consenttool. De klik geldt niet automatisch als toestemming.
 - JavaScript is vereist; zonder JavaScript doet de knop niets.

@@ -1,5 +1,5 @@
-{# Editorwaarden: ; { } < > * quotes en backslash worden eruit gehaald zodat ze geen CSS kunnen injecteren of commentaar kunnen openen. #}
-{% set strip = {';': '', '{': '', '}': '', '<': '', '>': '', '*': '', '"': '', "'": '', '\\': ''} %}
+{# Editorwaarden: ; { } < > * en quotes worden eruit gehaald zodat ze hun CSS-regel niet kunnen verlaten of commentaar kunnen openen. Geen backslash in deze lijst: dat laat Twig.js in de builder crashen. #}
+{% set strip = {';': '', '{': '', '}': '', '<': '', '>': '', '*': '', '"': '', "'": ''} %}
 {% set ratio = design.video.aspect_ratio %}
 {% set play = design.play %}
 %%SELECTOR%% {
