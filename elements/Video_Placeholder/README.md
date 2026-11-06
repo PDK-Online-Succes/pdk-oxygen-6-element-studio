@@ -91,4 +91,4 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 
 ## Versie/compatibiliteit
 
-Ontwikkeld tegen Oxygen 6.2.1 (Element Studio, builder 6.2.1, de versie op de live site), WordPress 7.1.4, PHP 8.5.12. Browsers: elk recent browser met `URL`, `replaceChildren`, CSS `aspect-ratio`, `inset` en de losse CSS-eigenschappen `translate` en `scale`.
+Ontwikkeld tegen Oxygen 6.2.1 (Element Studio, builder 6.2.1, de versie op de live site), WordPress 7.1.4, PHP 8.5.12. Browsers: elk recent browser met `URL`, `replaceChildren`, CSS `aspect-ratio`, `grid`, `:has()` en de losse CSS-eigenschap `scale`.
