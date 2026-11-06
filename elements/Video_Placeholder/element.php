@@ -331,32 +331,24 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
     }
     return null;
   }
-  /* Centreert een icoon op de kleinste cirkel om de echte vorm: lege ruimte in de viewBox telt niet mee en driehoeken ogen recht. */
+  /* Centreert een icoon op het zwaartepunt van de echte vorm: lege ruimte in de viewBox telt niet mee, een driehoek oogt recht en een chevron staat in het midden. */
   function fit(svg) {
-    var root = svg.getScreenCTM(), pts = [], n = 200, c, r = 0;
+    var root = svg.getScreenCTM(), pts = [], c = { x: 0, y: 0 }, r = 0, stroke = 0;
     if (!root) return;
-    var inv = root.inverse();
-    svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line").forEach(function (el) {
-      if (el.closest("defs,clipPath,mask")) return;
-      var len = el.getTotalLength(), m = inv.multiply(el.getScreenCTM());
-      for (var i = 0; i <= n; i++) pts.push(el.getPointAtLength(len * i / n).matrixTransform(m));
+    var inv = root.inverse(), total = 0;
+    var els = [].filter.call(svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line"), function (el) {
+      return !el.closest("defs,clipPath,mask");
     });
-    if (!pts.length) return;
-    function far() {
-      var q = pts[0], d = -1;
-      pts.forEach(function (p) { var e = Math.hypot(p.x - c.x, p.y - c.y); if (e > d) { d = e; q = p; } });
-      r = d;
-      return q;
-    }
-    c = { x: pts[0].x, y: pts[0].y };
-    for (var k = 1; k <= 300; k++) {
-      var q = far();
-      c.x += (q.x - c.x) / (k + 1);
-      c.y += (q.y - c.y) / (k + 1);
-    }
-    far();
-    if (!(r > 0)) return;
-    r *= 1.02;
+    els.forEach(function (el) { total += el.getTotalLength(); });
+    if (!(total > 0)) return;
+    els.forEach(function (el) {
+      var len = el.getTotalLength(), m = inv.multiply(el.getScreenCTM()), n = Math.max(2, Math.ceil(len / total * 600)), st = getComputedStyle(el);
+      for (var i = 0; i < n; i++) pts.push(el.getPointAtLength(len * i / n).matrixTransform(m));
+      if (st.stroke !== "none") stroke = Math.max(stroke, parseFloat(st.strokeWidth) || 0);
+    });
+    pts.forEach(function (p) { c.x += p.x / pts.length; c.y += p.y / pts.length; });
+    pts.forEach(function (p) { r = Math.max(r, Math.hypot(p.x - c.x, p.y - c.y)); });
+    r = (r + stroke / 2) * 1.02;
     svg.setAttribute("viewBox", (c.x - r) + " " + (c.y - r) + " " + (2 * r) + " " + (2 * r));
   }
   function fitAll() {

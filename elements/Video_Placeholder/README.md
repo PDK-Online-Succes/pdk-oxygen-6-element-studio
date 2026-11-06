@@ -52,14 +52,14 @@ Geaccepteerde URL-vormen (YouTube en Vimeo: met of zonder `https://`):
 - Toegankelijkheid: de knop is een echte `<button>` met `aria-label`, heeft een zichtbare focusring en de hover-animatie volgt `prefers-reduced-motion`.
 - HTML5: als `play()` wordt geweigerd door de browser, wordt `controls` ingeschakeld zodat de bezoeker alsnog zelf kan starten.
 - In de builder wordt de speler niet vervangen; het script draait alleen op de front-end.
-- Icoon: op de site meet het script de echte vorm en legt de kleinste omsluitende cirkel daarvan op het midden van de knop. Lege ruimte in de `viewBox` telt dus niet mee en een driehoek oogt recht. Icon Size geldt voor die omsluitende cirkel, dus een vierkant icoon oogt kleiner dan een driehoek op dezelfde waarde.
+- Icoon: op de site meet het script de echte vorm en legt het zwaartepunt daarvan op het midden van de knop. Lege ruimte in de `viewBox` telt dus niet mee, een driehoek oogt recht en een chevron staat in het midden. Icon Size geldt voor de cirkel om de vorm vanaf dat punt, inclusief streekdikte.
 - Het hele placeholder-kader is klikbaar (niet alleen de knop) en toont een aanwijzer en de hover-stand van de knop. Toetsenbordgebruikers starten de video via de knop.
 
 ## Beperkingen
 
 - Mobiele browsers kunnen autoplay blokkeren; een tweede tik op de speler kan dan nodig zijn.
-- Het centreren van een eigen icoon gebeurt alleen op de site, niet in de builder: daar staat het icoon nog volgens zijn eigen `viewBox`. Stroke-breedte telt niet mee, en iconen die later via AJAX worden geladen worden niet gemeten.
-- De variabelenkiezer staat aan via `enableVariables` in `designControls()` van `element.php`. Controleer na opslaan in Element Studio of die regel er nog staat: de studio kan dit bestand herschrijven.
+- Het centreren van een eigen icoon gebeurt alleen op de site, niet in de builder: daar staat het icoon nog volgens zijn eigen `viewBox`. Iconen die later via AJAX worden geladen worden niet gemeten.
+- De variabelenkiezer staat aan via `enableVariables` in `designControls()` van `element.php`. **Opslaan in Element Studio haalt dit weg:** de generator van Oxygen 6.2.1 schrijft deze optie niet weg, ook niet met de schakelaar "Enable Variables". Bewerk dit element daarom alleen via de repository, of zet `element.php` daarna opnieuw uit de repository op de site.
 - Een `Permissions-Policy`-header met `autoplay=()` of `encrypted-media=()` blokkeert YouTube en Vimeo; zie stap 4 bij Installatie.
 - Geen integratie met een cookie-consenttool. De klik geldt niet automatisch als toestemming.
 - JavaScript is vereist; zonder JavaScript doet de knop niets.
