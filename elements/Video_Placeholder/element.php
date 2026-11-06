@@ -331,13 +331,14 @@ class VideoPlaceholder extends \Breakdance\Elements\Element
     }
     return null;
   }
-  /* Centreert een icoon op het zwaartepunt van de echte vorm: lege ruimte in de viewBox telt niet mee, een driehoek oogt recht en een chevron staat in het midden. */
+  /* Centreert een icoon op het gemiddelde van punten langs de zichtbare vorm: lege ruimte en onzichtbare kaders tellen niet mee, een driehoek oogt recht en een chevron staat in het midden. */
   function fit(svg) {
     var root = svg.getScreenCTM(), pts = [], c = { x: 0, y: 0 }, r = 0, stroke = 0;
     if (!root) return;
     var inv = root.inverse(), total = 0;
     var els = [].filter.call(svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line"), function (el) {
-      return !el.closest("defs,clipPath,mask");
+      var s = getComputedStyle(el);
+      return !el.closest("defs,clipPath,mask,symbol,pattern,marker") && el.getTotalLength() > 0 && s.display !== "none" && s.visibility !== "hidden" && !(s.fill === "none" && s.stroke === "none");
     });
     els.forEach(function (el) { total += el.getTotalLength(); });
     if (!(total > 0)) return;

@@ -77,4 +77,6 @@
   width: var(--pdk-vp-icon, 54%);
   max-width: 100%;
   height: auto;
+  /* scherpe punten en geschaalde lijnen niet afsnijden */
+  overflow: visible;
 }
