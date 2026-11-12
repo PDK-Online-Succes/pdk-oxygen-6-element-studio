@@ -1,0 +1,52 @@
+{%- set c = content.content -%}
+{%- set vertical = c.orientation == 'vertical' -%}
+{#- Startpositie: alleen een getal van 0 tot 100, anders 50. Geen backslash in het patroon: dat laat Twig.js in de builder crashen. -#}
+{%- set pos = (c.start ~ '') matches '/^[0-9]{1,3}([.][0-9]+)?$/' ? min(c.start, 100) : 50 -%}
+{#- Afbeeldings-URL's: alleen http(s) of een pad dat met één / begint. -#}
+{%- set safe = 'abcdefghijklmnopqrstuvwxyz0123456789-_.~%' -%}
+{%- set imgs = [] -%}
+{%- for key in ['before', 'after'] -%}
+  {%- set img = c[key ~ '_image'] -%}
+  {%- set url = (img is iterable ? img.url : img)|trim -%}
+  {%- set low = url|lower -%}
+  {%- set ok = url and (low starts with 'https://' or low starts with 'http://' or (low starts with '/' and low|slice(1, 1) in safe)) -%}
+  {%- set full = img is iterable ? img.sizes.full : null -%}
+  {%- set imgs = imgs|merge([{
+    key: key,
+    url: ok ? url : '',
+    alt: c[key ~ '_alt']|default(img is iterable ? (img.id ? get_attachment_alt(img.id) : img.alt) : ''),
+    w: full.width|default(''),
+    h: full.height|default(''),
+    srcset: img is iterable ? img.attributes.srcset : '',
+    sizes: img is iterable ? img.attributes.sizes : ''
+  }]) -%}
+{%- endfor -%}
+{%- if imgs[0].url or imgs[1].url or isBuilder %}
+<div class="pdk-ba{{ vertical ? ' pdk-ba--vertical' : '' }}" style="--pos: {{ pos|e('html_attr') }}%">
+{%- for i in imgs|reverse %}
+  {%- if i.url %}
+  <img class="pdk-ba__img pdk-ba__img--{{ i.key }}" src="{{ i.url|e('html_attr') }}" alt="{{ i.alt|e('html_attr') }}" loading="lazy" decoding="async" draggable="false"
+    {%- if i.w and i.h %} width="{{ i.w|e('html_attr') }}" height="{{ i.h|e('html_attr') }}"{% endif -%}
+    {%- if i.srcset %} srcset="{{ i.srcset|e('html_attr') }}"{% endif -%}
+    {%- if i.sizes %} sizes="{{ i.sizes|e('html_attr') }}"{% endif -%}
+  >
+  {%- else %}
+  <span class="pdk-ba__img pdk-ba__img--{{ i.key }} pdk-ba__empty">{{ isBuilder ? (i.key == 'before' ? 'Kies een voor-afbeelding' : 'Kies een na-afbeelding') : '' }}</span>
+  {%- endif %}
+{%- endfor %}
+{%- if c.labels %}
+  <span class="pdk-ba__label pdk-ba__label--before" aria-hidden="true">{{ c.label_before|default('Voor')|e }}</span>
+  <span class="pdk-ba__label pdk-ba__label--after" aria-hidden="true">{{ c.label_after|default('Na')|e }}</span>
+{%- endif %}
+  <input class="pdk-ba__range" type="range" min="0" max="100" step="1" value="{{ (vertical ? 100 - pos : pos)|e('html_attr') }}" aria-label="{{ c.aria_label|default('Vergelijk voor en na')|e('html_attr') }}"{% if vertical %} aria-orientation="vertical"{% endif %}>
+  <span class="pdk-ba__line" aria-hidden="true">
+    <span class="pdk-ba__handle">
+      {%- if c.icon.svgCode -%}
+        {{ c.icon.svgCode }}
+      {%- else -%}
+        <svg class="pdk-ba__arrows" viewBox="0 0 24 24" focusable="false"><path d="M9 6l-6 6 6 6zM15 6l6 6-6 6z"/></svg>
+      {%- endif -%}
+    </span>
+  </span>
+</div>
+{%- endif %}
