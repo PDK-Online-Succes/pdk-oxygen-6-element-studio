@@ -1,0 +1,14 @@
+{# Editorwaarden: ; { } < > * en quotes worden eruit gehaald zodat ze hun CSS-regel niet kunnen verlaten of commentaar kunnen openen. Geen backslash in deze lijst: dat laat Twig.js in de builder crashen. #}
+{% set strip = {';': '', '{': '', '}': '', '<': '', '>': '', '*': '', '"': '', "'": ''} %}
+{% set d = design.divider %}
+{% set l = design.labels %}
+%%SELECTOR%% {
+  {% if d.line_color %}--pdk-ba-line-color: {{ d.line_color|replace(strip) }};{% endif %}
+  {% if d.line_width.style %}--pdk-ba-line-width: {{ d.line_width.style|replace(strip) }};{% endif %}
+  {% if d.handle_size.style %}--pdk-ba-handle-size: {{ d.handle_size.style|replace(strip) }};{% endif %}
+  {% if d.handle_radius.style %}--pdk-ba-handle-radius: {{ d.handle_radius.style|replace(strip) }};{% endif %}
+  {% if d.handle_background %}--pdk-ba-handle-bg: {{ d.handle_background|replace(strip) }};{% endif %}
+  {% if d.icon_color %}--pdk-ba-icon-color: {{ d.icon_color|replace(strip) }};{% endif %}
+  {% if l.color %}--pdk-ba-label-color: {{ l.color|replace(strip) }};{% endif %}
+  {% if l.background %}--pdk-ba-label-bg: {{ l.background|replace(strip) }};{% endif %}
+}
