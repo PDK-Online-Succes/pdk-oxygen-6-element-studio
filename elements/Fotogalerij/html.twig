@@ -1,0 +1,48 @@
+{#- Fotogalerij: raster van foto's; een klik opent de grote foto in GLightbox (zie dependencies() in element.php). -#}
+{%- set g = content.galerij -%}
+{%- set images = g.images|default([]) -%}
+{#- URL's: alleen http(s) of een pad dat met één / begint. Geen backslash: dat laat Twig.js crashen. -#}
+{%- set safe = 'abcdefghijklmnopqrstuvwxyz0123456789-_.~%' -%}
+{%- if images is empty -%}
+  {%- if isBuilder -%}
+    <p class="fotogalerij__leeg">Kies foto's onder Content &gt; Galerij.</p>
+  {%- endif -%}
+{%- else -%}
+  <ul class="fotogalerij__lijst">
+    {%- for row in images -%}
+      {%- set img = row.image -%}
+      {%- if img -%}
+        {%- set full = (img.sizes.full.url|default(img.url))|trim -%}
+        {%- set fl = full|lower -%}
+        {%- set fullOk = full and (fl starts with 'https://' or fl starts with 'http://' or (fl starts with '/' and fl|slice(1, 1) in safe)) -%}
+        {%- set sel = img.sizes[g.image_size|default('thumbnail')]|default(img.sizes.full) -%}
+        {%- set src = (sel.url|default(img.url))|trim -%}
+        {%- set sl = src|lower -%}
+        {%- set srcOk = src and (sl starts with 'https://' or sl starts with 'http://' or (sl starts with '/' and sl|slice(1, 1) in safe)) -%}
+        {#- Eigen <img> in plaats van macros.image: die laat alt weg als hij leeg is en escaped de alt-tekst niet. -#}
+        {%- set pic -%}
+          {%- if srcOk -%}
+            <img class="fotogalerij__img" src="{{ src|e('html_attr') }}" alt="{{ img.alt|default('')|e('html_attr') }}" loading="lazy" decoding="async"
+              {%- if sel.width and sel.height %} width="{{ sel.width|e('html_attr') }}" height="{{ sel.height|e('html_attr') }}"{% endif -%}
+              {%- if img.attributes.srcset %} srcset="{{ img.attributes.srcset|e('html_attr') }}"{% endif -%}
+              {%- if img.attributes.sizes %} sizes="{{ img.attributes.sizes|e('html_attr') }}"{% endif -%}
+            >
+          {%- endif -%}
+        {%- endset -%}
+        <li class="fotogalerij__item">
+          {%- if g.no_lightbox or not fullOk -%}
+            {{ pic }}
+          {%- else -%}
+            {#- GLightbox zet de titel als HTML in de pagina: daarom dubbel escapen (eerst voor HTML, dan voor het attribuut). -#}
+            <a class="fotogalerij__link" href="{{ full|e('html_attr') }}"{% if img.caption %} data-title="{{ img.caption|e|e('html_attr') }}"{% endif %}>
+              {{ pic }}
+            </a>
+          {%- endif -%}
+          {%- if g.captions and img.caption -%}
+            <span class="fotogalerij__caption">{{ img.caption|e }}</span>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

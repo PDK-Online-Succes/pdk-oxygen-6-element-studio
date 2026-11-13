@@ -1,0 +1,17 @@
+{# Editorwaarden: ; { } < > * en quotes worden eruit gehaald zodat ze hun CSS-regel niet kunnen verlaten of commentaar kunnen openen. Geen backslash in deze lijst: dat laat Twig.js in de builder crashen. #}
+{% set strip = {';': '', '{': '', '}': '', '<': '', '>': '', '*': '', '"': '', "'": ''} %}
+%%SELECTOR%% {
+  {% if design.layout.columns %}
+    --fotogalerij-columns: {{ design.layout.columns|replace(strip) }};
+  {% endif %}
+  {% if design.layout.gap.style %}
+    --fotogalerij-gap: {{ design.layout.gap.style|replace(strip) }};
+  {% endif %}
+}
+
+{% if design.layout.square %}
+%%SELECTOR%% .fotogalerij__img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+{% endif %}
