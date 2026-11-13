@@ -15,4 +15,5 @@ Meer regels staan in [CLAUDE.md](CLAUDE.md).
 | Element | Slug | Wat het doet | Docs |
 | --- | --- | --- | --- |
 | Before After | `PdkElements\BeforeAfter` | Vergelijkt een voor- en na-afbeelding met een versleepbare scheidingslijn; ook met het toetsenbord te bedienen. | [README](elements/Before_After/README.md) |
+| Fotogalerij | `PdkElements\Fotogalerij` | Raster van foto's uit de mediabibliotheek; een klik opent de grote foto in een lightbox (GLightbox uit de Libraries-map). | [README](elements/Fotogalerij/README.md) |
 | Video Placeholder | `PdkElements\VideoPlaceholder` | HTML5-, YouTube- of Vimeo-video met eigen placeholder-afbeelding en play-knop; de speler laadt pas na een klik. | [README](elements/Video_Placeholder/README.md) |
